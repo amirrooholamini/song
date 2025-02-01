@@ -1,23 +1,29 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 # Create your views here.
 
 music_items = [
-    {"id": 1, "name": "song_1", "singer": "ghomayshi"},
-    {"id": 2, "name": "song_2", "singer": "shadmehr"},
-    {"id": 3, "name": "song_3", "singer": "mohsen yeganeh"},
+    {"id": 1, "name": "قمیشی", "singer": "ghomayshi"},
+    {"id": 2, "name": "شادمهر", "singer": "shadmehr"},
+    {"id": 3, "name": "محسن یگانه", "singer": "mohsen yeganeh"},
 ]
 
 
 def hello(request):
-    return HttpResponse("Done!")
+    url = reverse('music-list')
+    return HttpResponseRedirect(url)
 
 def musics(request):
     data = ""
     for item in music_items:
-        data = data + f"id: {item['id']} , name: {item['name']} , singer: {item['singer']}" + "<br>"
+        url = reverse('music-detail', args=[item['id']])
+        data = data + f"<a href='{url}' target='_blank'>{item['name']}</a>" + "<br>"
     return HttpResponse(data)
 
-def detail(request):
-    return HttpResponse("music detail")
+def standard_music_list(request):
+    return render(request, 'music/list.html')
+
+def detail(request, id):
+    return HttpResponse(f"music detail of music: {id}")
 
