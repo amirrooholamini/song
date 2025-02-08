@@ -7,6 +7,7 @@ music_items = [
     {"id": 1, "name": "قمیشی", "singer": "ghomayshi"},
     {"id": 2, "name": "شادمهر", "singer": "shadmehr"},
     {"id": 3, "name": "محسن یگانه", "singer": "mohsen yeganeh"},
+    {"id": 4, "name": "محسن یگانه", "singer": "mohsen yeganeh"},
 ]
 
 
@@ -21,9 +22,25 @@ def musics(request):
         data = data + f"<a href='{url}' target='_blank'>{item['name']}</a>" + "<br>"
     return HttpResponse(data)
 
-def standard_music_list(request):
-    return render(request, 'music/list.html')
+def standard_music_list(request, name):
+    filter_list = []
+    for item in music_items:
+        if name in item["name"]:
+            filter_list.append(item)
+
+    context = {"musics": filter_list}
+    return render(request, 'music/list.html', context=context)
 
 def detail(request, id):
-    return HttpResponse(f"music detail of music: {id}")
+    # return HttpResponse(f"music detail of music: {id}")
+    selected_music = {}
+    for item in music_items:
+        if item["id"] == id:
+            selected_music = item
+            break
 
+    return render(request, "music/detail.html", context=selected_music)
+
+def detail2(request):
+    id = request.GET.get("id", 0)
+    return HttpResponse(id)
